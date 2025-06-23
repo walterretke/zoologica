@@ -3,10 +3,11 @@ package com.example.demo.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "game_character") // "character" is a reserved keyword in SQL
+@Table(name = "game_character")
 public class Character {
 
     @Id
@@ -20,6 +21,14 @@ public class Character {
     private Outfit outfit;
 
     private Integer totalCoins;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "character_achievements",
+            joinColumns = @JoinColumn(name = "character_id"),
+            inverseJoinColumns = @JoinColumn(name = "achievement_id")
+    )
+    private Set<Achievement> achievements;
 
     @ManyToOne
     @JoinColumn(name = "current_cage_id")

@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ProblemMatchRepository extends JpaRepository<ProblemMatch, Long> {
     List<ProblemMatch> findByCharacterOrderByDateTimeDesc(Character character);
+    long countByCharacterAndCorrect(Character character, Boolean correct);
+    long countByCharacter(Character character);
 }

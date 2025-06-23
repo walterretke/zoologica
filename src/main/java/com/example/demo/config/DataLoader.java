@@ -1,7 +1,9 @@
 package com.example.demo.config;
 
+import com.example.demo.models.Achievement;
 import com.example.demo.models.AnimalTemplate;
 import com.example.demo.models.CageType;
+import com.example.demo.repositories.AchievementRepository;
 import com.example.demo.repositories.AnimalTemplateRepository;
 import com.example.demo.repositories.CageTypeRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +16,17 @@ public class DataLoader implements CommandLineRunner {
 
     private final CageTypeRepository cageTypeRepository;
     private final AnimalTemplateRepository animalTemplateRepository;
+    private final AchievementRepository achievementRepository;
 
     @Override
     public void run(String... args) throws Exception {
         if (cageTypeRepository.count() == 0) {
             createCageTypes();
             createAnimalTemplates();
+        }
+
+        if (achievementRepository.count() == 0) {
+            createAchievements();
         }
     }
 
@@ -116,5 +123,39 @@ public class DataLoader implements CommandLineRunner {
         animalTemplateRepository.save(new AnimalTemplate("Zigzag", 205, "Uma zebra rápida como o vento", zebra));
 
         System.out.println("✅ Animal templates created successfully!");
+    }
+
+    private void createAchievements() {
+        // Achievement 1: Primeira conta
+        Achievement primeiraContaAchievement = new Achievement();
+        primeiraContaAchievement.setName("Primeira conta");
+        primeiraContaAchievement.setDescription("Parabéns! Você acertou sua primeira conta de matemática!");
+        primeiraContaAchievement.setIcon("🎯");
+        primeiraContaAchievement.setRewardCoins(10);
+        primeiraContaAchievement.setCategory("PROGRESSION");
+        primeiraContaAchievement.setIsActive(true);
+        achievementRepository.save(primeiraContaAchievement);
+
+        // Achievement 2: Pegando o jeito
+        Achievement pegandoJeitoAchievement = new Achievement();
+        pegandoJeitoAchievement.setName("Pegando o jeito");
+        pegandoJeitoAchievement.setDescription("Excelente! Você já acertou 10 contas. Continue assim!");
+        pegandoJeitoAchievement.setIcon("📚");
+        pegandoJeitoAchievement.setRewardCoins(50);
+        pegandoJeitoAchievement.setCategory("PROGRESSION");
+        pegandoJeitoAchievement.setIsActive(true);
+        achievementRepository.save(pegandoJeitoAchievement);
+
+        // Achievement 3: Ficando craque
+        Achievement ficandoCraqueAchievement = new Achievement();
+        ficandoCraqueAchievement.setName("Ficando craque");
+        ficandoCraqueAchievement.setDescription("Incrível! Você acertou 50 contas. Você está ficando um craque em matemática!");
+        ficandoCraqueAchievement.setIcon("🏆");
+        ficandoCraqueAchievement.setRewardCoins(100);
+        ficandoCraqueAchievement.setCategory("PROGRESSION");
+        ficandoCraqueAchievement.setIsActive(true);
+        achievementRepository.save(ficandoCraqueAchievement);
+
+        System.out.println("✅ Achievements created successfully!");
     }
 }

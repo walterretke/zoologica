@@ -12,15 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CharacterDTO {
-
     private Long id;
     private String name;
-
     private Long outfitId;
     private Long currentCageId;
-
     private Integer totalCoins;
-
     private List<Long> cagesIds;
     private List<Long> problemMatchIds;
+    private List<Long> achievementIds;
 }

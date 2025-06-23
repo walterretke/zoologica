@@ -1,8 +1,10 @@
 package com.example.demo.services.character;
 
 import com.example.demo.dto.CharacterDTO;
+import com.example.demo.models.Achievement;
 import com.example.demo.models.Character;
 import com.example.demo.repositories.CharacterRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,12 +34,33 @@ public class CharacterServiceImpl implements CharacterService {
         return convertToDTO(savedCharacter);
     }
 
+
     @Override
+    @Transactional
     public CharacterDTO findById(Long id) {
-        Character character = characterRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Character not found with id: " + id)
-        );
-        return convertToDTO(character);
+        Character character = characterRepository.findById(id).orElseThrow();
+
+        CharacterDTO characterDTO = new CharacterDTO();
+        characterDTO.setId(character.getId());
+        characterDTO.setName(character.getName());
+        characterDTO.setOutfitId(character.getOutfit() != null ? character.getOutfit().getId() : null);
+        characterDTO.setCurrentCageId(character.getCurrentCage() != null ? character.getCurrentCage().getId() : null);
+        characterDTO.setTotalCoins(character.getTotalCoins());
+
+        List<Long> cageIds = character.getCages() != null ?
+                character.getCages().stream().map(cage -> cage.getId()).collect(Collectors.toList()) :
+                new ArrayList<>();
+        characterDTO.setCagesIds(cageIds);
+
+        List<Long> problemMatchIds = character.getProblemMatches() != null ?
+                character.getProblemMatches().stream().map(match -> match.getId()).collect(Collectors.toList()) :
+                new ArrayList<>();
+        characterDTO.setProblemMatchIds(problemMatchIds);
+
+        List<Long> achievementIds = characterRepository.findAchievementIdsByCharacterId(id);
+        characterDTO.setAchievementIds(achievementIds);
+
+        return characterDTO;
     }
 
     @Override
@@ -61,6 +84,10 @@ public class CharacterServiceImpl implements CharacterService {
                 character.getProblemMatches().stream().map(match -> match.getId()).collect(Collectors.toList()) :
                 new ArrayList<>();
 
+        List<Long> achievementIds = character.getAchievements() != null ?
+                character.getAchievements().stream().map(achievement -> achievement.getId()).collect(Collectors.toList()) :
+                new ArrayList<>();
+
         return CharacterDTO.builder()
                 .id(character.getId())
                 .name(character.getName())
@@ -69,6 +96,7 @@ public class CharacterServiceImpl implements CharacterService {
                 .totalCoins(character.getTotalCoins())
                 .cagesIds(cageIds)
                 .problemMatchIds(problemMatchIds)
+                .achievementIds(achievementIds)
                 .build();
     }
 }
